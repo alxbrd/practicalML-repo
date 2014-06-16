@@ -8,7 +8,7 @@
 .Rdata
 
 # Datasets
-.csv
+*.csv
 
 
 *~
