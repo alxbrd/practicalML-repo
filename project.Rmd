@@ -160,9 +160,7 @@ data_evaluation.f <- data_evaluation.f[,-which(names(data_evaluation.f) %in% rem
 data_evaluation.f <- data_evaluation.f[,-which(names(data_evaluation.f) %in% useless_features)]
 data_evaluation.f <- as.data.frame(lapply(data_evaluation.f, as.numeric))
 data_evaluation.f <- data_evaluation.f[,-which(names(data_evaluation.f) %in% remove_columns2)]
-dim(data_evaluation.f)
 preProcValues <- preProcess(data_evaluation.f, method = c("center", "scale"))
-dim(data_evaluation.f)
 data_evaluation.f <- predict(preProcValues, data_evaluation.f)
 
 answers = predict(model1, newdata = data_evaluation.f)
@@ -181,4 +179,6 @@ pml_write_files = function(x){
 }
 
 pml_write_files(answers)
+
+print(answers)
 ```

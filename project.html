@@ -200,66 +200,22 @@ hljs.initHighlightingOnLoad();
 </code></pre>
 
 <pre><code class="r">data &lt;- read.csv(file=&quot;pml-training.csv&quot;, head = TRUE, sep=&quot;,&quot;, na.strings=c(&quot;&quot;,&quot;NA&quot;))
-</code></pre>
 
-<pre><code>## Warning: cannot open file &#39;pml-training.csv&#39;: No such file or directory
-</code></pre>
+label &lt;- data[, 160]  # Creates a factor vector for the indexing
+label &lt;- as.factor(label)
+features &lt;- data[, 1:159]
 
-<pre><code>## Error: cannot open the connection
-</code></pre>
-
-<pre><code class="r">label &lt;- data[, 160]  # Creates a factor vector for the indexing
-</code></pre>
-
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable
-</code></pre>
-
-<pre><code class="r">label &lt;- as.factor(label)
-</code></pre>
-
-<pre><code>## Error: object &#39;label&#39; not found
-</code></pre>
-
-<pre><code class="r">features &lt;- data[, 1:159]
-</code></pre>
-
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable
-</code></pre>
-
-<pre><code class="r">set.seed(1)
+set.seed(1)
 inTrain &lt;- createDataPartition(y = data$classe, p = 0.7, list = FALSE)
-</code></pre>
 
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable
-</code></pre>
-
-<pre><code class="r"># Create the train and test feature set
+# Create the train and test feature set
 training.f &lt;- features[inTrain,]
-</code></pre>
-
-<pre><code>## Error: object &#39;features&#39; not found
-</code></pre>
-
-<pre><code class="r">validation.f &lt;- features[-inTrain,]
-</code></pre>
-
-<pre><code>## Error: object &#39;features&#39; not found
-</code></pre>
-
-<pre><code class="r"># Create the train and validation label
+validation.f &lt;- features[-inTrain,]
+# Create the train and validation label
 training.label &lt;- label[inTrain]
-</code></pre>
+validation.label &lt;- label[-inTrain]
 
-<pre><code>## Error: object &#39;label&#39; not found
-</code></pre>
-
-<pre><code class="r">validation.label &lt;- label[-inTrain]
-</code></pre>
-
-<pre><code>## Error: object &#39;label&#39; not found
-</code></pre>
-
-<pre><code class="r"># Get an idea about the content of the available feature set
+# Get an idea about the content of the available feature set
 # head(training.f)
 </code></pre>
 
@@ -282,130 +238,59 @@ find_na_columns = function(dataset) {
 }
 
 remove_columns &lt;- find_na_columns(training.f)
-</code></pre>
-
-<pre><code>## Error: object &#39;training.f&#39; not found
-</code></pre>
-
-<pre><code class="r">training.f &lt;- training.f[,-which(names(training.f) %in% remove_columns)]
-</code></pre>
-
-<pre><code>## Error: object &#39;training.f&#39; not found
-</code></pre>
-
-<pre><code class="r">validation.f &lt;- validation.f[,-which(names(validation.f) %in% remove_columns)]
-</code></pre>
-
-<pre><code>## Error: object &#39;validation.f&#39; not found
+training.f &lt;- training.f[,-which(names(training.f) %in% remove_columns)]
+validation.f &lt;- validation.f[,-which(names(validation.f) %in% remove_columns)]
 </code></pre>
 
 <p>Then, we converted all the feature columns to numeric, and we remove the highly correlated features from the training and validation set.</p>
 
 <pre><code class="r"># Convert all columns to numeric
 training.f &lt;- as.data.frame(lapply(training.f, as.numeric))
-</code></pre>
+validation.f &lt;- as.data.frame(lapply(validation.f, as.numeric))
 
-<pre><code>## Error: object &#39;training.f&#39; not found
-</code></pre>
-
-<pre><code class="r">validation.f &lt;- as.data.frame(lapply(validation.f, as.numeric))
-</code></pre>
-
-<pre><code>## Error: object &#39;validation.f&#39; not found
-</code></pre>
-
-<pre><code class="r"># Remove highly correlated features
+# Remove highly correlated features
 featureCorr &lt;- cor(training.f)
-</code></pre>
+highCorr &lt;- findCorrelation(featureCorr, 0.95)
+remove_columns2 &lt;- lapply(highCorr, function(x) colnames(training.f[])[x])
 
-<pre><code>## Error: object &#39;training.f&#39; not found
-</code></pre>
+training.f &lt;- training.f[,-which(names(training.f) %in% remove_columns2)]
+validation.f &lt;- validation.f[,-which(names(validation.f) %in% remove_columns2)]
 
-<pre><code class="r">highCorr &lt;- findCorrelation(featureCorr, 0.95)
-</code></pre>
-
-<pre><code>## Error: object &#39;featureCorr&#39; not found
-</code></pre>
-
-<pre><code class="r">remove_columns2 &lt;- lapply(highCorr, function(x) colnames(training.f[])[x])
-</code></pre>
-
-<pre><code>## Error: object &#39;highCorr&#39; not found
-</code></pre>
-
-<pre><code class="r">training.f &lt;- training.f[,-which(names(training.f) %in% remove_columns2)]
-</code></pre>
-
-<pre><code>## Error: object &#39;training.f&#39; not found
-</code></pre>
-
-<pre><code class="r">validation.f &lt;- validation.f[,-which(names(validation.f) %in% remove_columns2)]
-</code></pre>
-
-<pre><code>## Error: object &#39;validation.f&#39; not found
-</code></pre>
-
-<pre><code class="r"># Get an idea about the content of the available feature set
+# Get an idea about the content of the available feature set
 # head(training.f)
 plot(training.label, training.f$new_window)
 </code></pre>
 
-<pre><code>## Error: object &#39;training.label&#39; not found
-</code></pre>
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-3"/> </p>
 
 <pre><code class="r">plot(training.label, training.f$X)
 </code></pre>
 
-<pre><code>## Error: object &#39;training.label&#39; not found
-</code></pre>
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-3"/> </p>
 
 <pre><code class="r">plot(training.label, training.f$user_name)
 </code></pre>
 
-<pre><code>## Error: object &#39;training.label&#39; not found
-</code></pre>
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-3"/> </p>
 
 <p>Then, we remove the variables &ldquo;user_name&rdquo;, &ldquo;new_window&rdquo;, and &ldquo;X&rdquo; which do not seem helpful for predicting the five classes of interest. </p>
 
 <pre><code class="r"># Remove useless variables
 useless_features &lt;- c(&quot;user_name&quot;, &quot;new_window&quot;, &quot;X&quot;) 
 training.f &lt;- training.f[,-which(names(training.f) %in% useless_features)]
+validation.f &lt;- validation.f[,-which(names(validation.f) %in% useless_features)]
+dim(training.f)[2] # Number of remaining features
 </code></pre>
 
-<pre><code>## Error: object &#39;training.f&#39; not found
-</code></pre>
-
-<pre><code class="r">validation.f &lt;- validation.f[,-which(names(validation.f) %in% useless_features)]
-</code></pre>
-
-<pre><code>## Error: object &#39;validation.f&#39; not found
-</code></pre>
-
-<pre><code class="r">dim(training.f)[2] # Number of remaining features
-</code></pre>
-
-<pre><code>## Error: object &#39;training.f&#39; not found
+<pre><code>## [1] 51
 </code></pre>
 
 <p>As a last step of our preprocessing, we center and scale the values of the remaining features.</p>
 
 <pre><code class="r"># Center and scale data 
 xTrans &lt;- preProcess(training.f, method = c(&quot;center&quot;, &quot;scale&quot;))
-</code></pre>
-
-<pre><code>## Error: object &#39;training.f&#39; not found
-</code></pre>
-
-<pre><code class="r">training.f &lt;- predict(xTrans, training.f)      # Transformed training dataset
-</code></pre>
-
-<pre><code>## Error: object &#39;xTrans&#39; not found
-</code></pre>
-
-<pre><code class="r">validation.f &lt;- predict(xTrans, validation.f)       # Transformed validation dataset
-</code></pre>
-
-<pre><code>## Error: object &#39;xTrans&#39; not found
+training.f &lt;- predict(xTrans, training.f)      # Transformed training dataset
+validation.f &lt;- predict(xTrans, validation.f)       # Transformed validation dataset
 </code></pre>
 
 <p>In the model selection step, we use 10-fold cross-validation for tuning the parameters of the created models.</p>
@@ -425,12 +310,8 @@ model1 = train(training.f, # x - predictors
                #tuneGrid = rfGrid,
                # preProcess=&quot;pca&quot;,
                importance=TRUE)
-</code></pre>
 
-<pre><code>## Error: object &#39;training.f&#39; not found
-</code></pre>
-
-<pre><code class="r">#
+#
 # Support Vector Machine model 
 #
 model2 &lt;- train(training.f, # x - predictors
@@ -442,7 +323,7 @@ model2 &lt;- train(training.f, # x - predictors
                  preProcess=&quot;pca&quot;)
 </code></pre>
 
-<pre><code>## Error: object &#39;training.f&#39; not found
+<pre><code>## Loading required package: kernlab
 </code></pre>
 
 <p>In the Model Validation step, we evaluate the performance of the created models on the validation step and we select as our final model the best performing one.</p>
@@ -460,110 +341,30 @@ find_accuracy = function(model){
 
 models &lt;- c()
 models[[1]] &lt;- model1
-</code></pre>
+models[[2]] &lt;- model2
 
-<pre><code>## Error: object &#39;model1&#39; not found
-</code></pre>
-
-<pre><code class="r">models[[2]] &lt;- model2
-</code></pre>
-
-<pre><code>## Error: object &#39;model2&#39; not found
-</code></pre>
-
-<pre><code class="r">accuracy &lt;- unlist(lapply(models, find_accuracy))
+accuracy &lt;- unlist(lapply(models, find_accuracy))
 best_model &lt;- models[which(accuracy == max(accuracy))]
-</code></pre>
-
-<pre><code>## Warning: no non-missing arguments to max; returning -Inf
 </code></pre>
 
 <p>Finally, we use the selected model to predict the classes of the given testing dataset. Note that we performed to the testing set the same  preprocessing steps as with the training set.</p>
 
 <pre><code class="r"># Apply the same preprocessing to external testing dataset
 data_evaluation &lt;- read.csv(file=&quot;pml-testing.csv&quot;, head = TRUE)
-</code></pre>
+data_evaluation.labels &lt;- data_evaluation[, 160]
+data_evaluation.f &lt;- data_evaluation[, 1:159]
+data_evaluation.f &lt;- data_evaluation.f[,-which(names(data_evaluation.f) %in% remove_columns)]
+data_evaluation.f &lt;- data_evaluation.f[,-which(names(data_evaluation.f) %in% useless_features)]
+data_evaluation.f &lt;- as.data.frame(lapply(data_evaluation.f, as.numeric))
+data_evaluation.f &lt;- data_evaluation.f[,-which(names(data_evaluation.f) %in% remove_columns2)]
+preProcValues &lt;- preProcess(data_evaluation.f, method = c(&quot;center&quot;, &quot;scale&quot;))
+data_evaluation.f &lt;- predict(preProcValues, data_evaluation.f)
 
-<pre><code>## Warning: cannot open file &#39;pml-testing.csv&#39;: No such file or directory
-</code></pre>
+answers = predict(model1, newdata = data_evaluation.f)
 
-<pre><code>## Error: cannot open the connection
-</code></pre>
+answers = predict(best_model[[1]], newdata = data_evaluation.f)
 
-<pre><code class="r">data_evaluation.labels &lt;- data_evaluation[, 160]
-</code></pre>
-
-<pre><code>## Error: object &#39;data_evaluation&#39; not found
-</code></pre>
-
-<pre><code class="r">data_evaluation.f &lt;- data_evaluation[, 1:159]
-</code></pre>
-
-<pre><code>## Error: object &#39;data_evaluation&#39; not found
-</code></pre>
-
-<pre><code class="r">data_evaluation.f &lt;- data_evaluation.f[,-which(names(data_evaluation.f) %in% remove_columns)]
-</code></pre>
-
-<pre><code>## Error: object &#39;data_evaluation.f&#39; not found
-</code></pre>
-
-<pre><code class="r">data_evaluation.f &lt;- data_evaluation.f[,-which(names(data_evaluation.f) %in% useless_features)]
-</code></pre>
-
-<pre><code>## Error: object &#39;data_evaluation.f&#39; not found
-</code></pre>
-
-<pre><code class="r">data_evaluation.f &lt;- as.data.frame(lapply(data_evaluation.f, as.numeric))
-</code></pre>
-
-<pre><code>## Error: object &#39;data_evaluation.f&#39; not found
-</code></pre>
-
-<pre><code class="r">data_evaluation.f &lt;- data_evaluation.f[,-which(names(data_evaluation.f) %in% remove_columns2)]
-</code></pre>
-
-<pre><code>## Error: object &#39;data_evaluation.f&#39; not found
-</code></pre>
-
-<pre><code class="r">dim(data_evaluation.f)
-</code></pre>
-
-<pre><code>## Error: object &#39;data_evaluation.f&#39; not found
-</code></pre>
-
-<pre><code class="r">preProcValues &lt;- preProcess(data_evaluation.f, method = c(&quot;center&quot;, &quot;scale&quot;))
-</code></pre>
-
-<pre><code>## Error: object &#39;data_evaluation.f&#39; not found
-</code></pre>
-
-<pre><code class="r">dim(data_evaluation.f)
-</code></pre>
-
-<pre><code>## Error: object &#39;data_evaluation.f&#39; not found
-</code></pre>
-
-<pre><code class="r">data_evaluation.f &lt;- predict(preProcValues, data_evaluation.f)
-</code></pre>
-
-<pre><code>## Error: object &#39;preProcValues&#39; not found
-</code></pre>
-
-<pre><code class="r">answers = predict(model1, newdata = data_evaluation.f)
-</code></pre>
-
-<pre><code>## Error: object &#39;model1&#39; not found
-</code></pre>
-
-<pre><code class="r">answers = predict(best_model[[1]], newdata = data_evaluation.f)
-</code></pre>
-
-<pre><code>## Error: no applicable method for &#39;predict&#39; applied to an object of class
-## &quot;NULL&quot;
-</code></pre>
-
-<pre><code class="r">#
+#
 # Create answer files
 #
 pml_write_files = function(x){
@@ -575,9 +376,12 @@ pml_write_files = function(x){
 }
 
 pml_write_files(answers)
+
+print(answers)
 </code></pre>
 
-<pre><code>## Error: object &#39;answers&#39; not found
+<pre><code>##  [1] E A C B E C C C B E B C E A E E E B E E
+## Levels: A B C D E
 </code></pre>
 
 </body>
